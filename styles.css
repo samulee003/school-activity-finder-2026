@@ -201,10 +201,10 @@ dialog::backdrop{background:rgba(43,45,42,.26);backdrop-filter:blur(3px)}
   .app{width:min(100% - 14px, 1220px);display:flex;flex-direction:column}
   .topbar{order:0}
   .command{order:1}
-  .results-head{order:2}
-  .mobile-list{order:3}
-  .compare{order:4}
-  .cat-panel{order:5}
+  .cat-panel{order:2}
+  .results-head{order:3}
+  .mobile-list{order:4}
+  .compare{order:5}
   .filters{order:6}
   .summary{order:7}
   .table-wrap{order:8}
