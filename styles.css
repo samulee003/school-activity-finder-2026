@@ -53,7 +53,21 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 .summary-badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .summary-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface-2);font-size:12px;color:var(--muted)}
 .summary-badge strong{font-size:13px;color:var(--ink)}
-.command{position:sticky;top:0;z-index:40;padding:10px 0 12px;background:linear-gradient(var(--paper) 76%, rgba(247,243,236,0))}
+.command{position:sticky;top:0;z-index:40;padding:10px 0 12px;background:linear-gradient(var(--paper) 76%, rgba(247,243,236,0));transition:padding .22s ease}
+/* mobile smart-collapse state */
+.command .collapse-bar{display:none}
+@media (max-width:820px){
+  .command .command-box{max-height:400px;overflow:hidden}
+  .command.collapsed{padding:8px 0 6px}
+  .command.collapsed .command-box{max-height:0;opacity:0;transform:translateY(-4px);pointer-events:none}
+  .command .collapse-bar{display:flex;align-items:center;gap:8px;height:0;overflow:hidden;opacity:0;cursor:pointer}
+  .command.collapsed .collapse-bar{height:44px;opacity:1}
+  .collapse-search{flex:1;min-width:0;display:flex;align-items:center;gap:7px;height:44px;padding:0 13px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.94);box-shadow:var(--shadow-sm);color:var(--muted);font-size:13px}
+  .collapse-search svg{width:16px;height:16px;flex:none}
+  .collapse-search .collapse-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .collapse-summary{flex:none;max-width:46%;display:flex;align-items:center;gap:5px;height:44px;padding:0 12px;border:1px solid rgba(53,95,88,.22);border-radius:13px;background:var(--accent-soft);color:var(--accent);font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .command.no-anim,.command.no-anim .command-box,.command.no-anim .collapse-bar{transition:none!important}
+}
 .command-box{padding:12px;border-radius:16px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border:1px solid var(--line);box-shadow:var(--shadow)}
 .search-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}
 .searchbox{position:relative}
