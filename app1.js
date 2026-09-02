@@ -4,10 +4,20 @@ const dayFull={一:'星期一',二:'星期二',三:'星期三',四:'星期四',�
 const IMAGE_MAP=window.__IMAGE_MAP__;
 
 async function loadData(){
-  const bin=Uint8Array.from(atob(window.__DATA_GZIP__),c=>c.charCodeAt(0));
+  if(Array.isArray(window.__DATA__) && window.__DATA__.length) return window.__DATA__;
+  const encoded=window.__DATA_GZIP__;
+  if(typeof encoded!=='string'||!encoded) throw new Error('Activity data is unavailable');
+  if(typeof Blob==='undefined'||typeof Blob.prototype.stream!=='function'||typeof DecompressionStream==='undefined'){
+  throw new Error('Plain activity data is unavailable');
+  }
+  try{
+  const bin=Uint8Array.from(atob(encoded),c=>c.charCodeAt(0));
   const stream=new Blob([bin]).stream().pipeThrough(new DecompressionStream('gzip'));
   return JSON.parse(await new Response(stream).text());
-}
+  }catch(error){
+  throw new Error('Activity data could not be decompressed',{cause:error});
+  }
+  }
 const GROUPS=[
   {id:'all', title:'全部活動', desc:'查看全部', cats:null, image:IMAGE_MAP.doc},
   {id:'art', title:'藝術・創作', desc:'藝術、手作、舞蹈', cats:['藝術・創作','舞蹈'], image:IMAGE_MAP.art},
