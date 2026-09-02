@@ -228,5 +228,6 @@ dialog::backdrop{background:rgba(43,45,42,.26);backdrop-filter:blur(3px)}
   body{background:#fff}
   .top-actions,.command,.cat-panel,.filters,.foot,.actions,.mobile-actions,#detailDialog{display:none!important}
   .panel,.table tbody td{box-shadow:none}
+  .table-wrap{display:block!important}
   .mobile-list{display:none!important}
 }

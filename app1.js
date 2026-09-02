@@ -1,7 +1,9 @@
 let DATA=[];
 const gradeNames={1:'小一',2:'小二',3:'小三',4:'小四',5:'小五',6:'小六'};
 const dayFull={一:'星期一',二:'星期二',三:'星期三',四:'星期四',五:'星期五',六:'星期六',日:'星期日',天:'星期日'};
-const IMAGE_MAP=window.__IMAGE_MAP__;
+const IMAGE_MAP=window.__IMAGE_MAP__||{};
+const FALLBACK_IMAGE="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect width='48' height='48' fill='%23f2ede5'/%3E%3C/svg%3E";
+function imageFor(key){return IMAGE_MAP[key]||IMAGE_MAP.doc||FALLBACK_IMAGE;}
 
 async function loadData(){
   if(Array.isArray(window.__DATA__) && window.__DATA__.length) return window.__DATA__;
@@ -19,13 +21,13 @@ async function loadData(){
   }
   }
 const GROUPS=[
-  {id:'all', title:'全部活動', desc:'查看全部', cats:null, image:IMAGE_MAP.doc},
-  {id:'art', title:'藝術・創作', desc:'藝術、手作、舞蹈', cats:['藝術・創作','舞蹈'], image:IMAGE_MAP.art},
-  {id:'music', title:'音樂・表演', desc:'音樂與舞台表現', cats:['音樂','領袖・表演'], image:IMAGE_MAP.music},
-  {id:'sport', title:'體育・運動', desc:'球類與身體活動', cats:['體育'], image:IMAGE_MAP.sport},
-  {id:'stem', title:'STEM・科技', desc:'AI、科技、數理', cats:['STEM・科技','數學・思維'], image:IMAGE_MAP.ai},
-  {id:'language', title:'語言・閱讀', desc:'閱讀、表達、語言', cats:['語言・表達','語言學習'], image:IMAGE_MAP.book},
-  {id:'growth', title:'成長・桌遊', desc:'情緒、桌遊、團體', cats:['成長・情緒','棋藝・桌遊','信仰・團體'], image:IMAGE_MAP.well}
+  {id:'all', title:'全部活動', desc:'查看全部', cats:null, image:imageFor('doc')},
+  {id:'art', title:'藝術・創作', desc:'藝術、手作、舞蹈', cats:['藝術・創作','舞蹈'], image:imageFor('art')},
+  {id:'music', title:'音樂・表演', desc:'音樂與舞台表現', cats:['音樂','領袖・表演'], image:imageFor('music')},
+  {id:'sport', title:'體育・運動', desc:'球類與身體活動', cats:['體育'], image:imageFor('sport')},
+  {id:'stem', title:'STEM・科技', desc:'AI、科技、數理', cats:['STEM・科技','數學・思維'], image:imageFor('ai')},
+  {id:'language', title:'語言・閱讀', desc:'閱讀、表達、語言', cats:['語言・表達','語言學習'], image:imageFor('book')},
+  {id:'growth', title:'成長・桌遊', desc:'情緒、桌遊、團體', cats:['成長・情緒','棋藝・桌遊','信仰・團體'], image:imageFor('well')}
 ];
 const GROUP_MAP=Object.fromEntries(GROUPS.map(g=>[g.id,g]));
 const el={
