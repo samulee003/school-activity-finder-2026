@@ -24,22 +24,59 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Build browser-compatible activity data
+      - name: Validate activity data
         shell: bash
         run: |
+          set -euo pipefail
           node <<'NODE'
           const fs = require('fs');
           const zlib = require('zlib');
-          const source = fs.readFileSync('data.js', 'utf8');
-          const match = source.match(/window\.__DATA_GZIP__='([^']+)'/);
-          if (!match) throw new Error('Compressed activity data was not found');
-          const json = zlib.gunzipSync(Buffer.from(match[1], 'base64')).toString('utf8');
-          const data = JSON.parse(json);
-          if (!Array.isArray(data) || data.length !== 104) {
-            throw new Error(`Unexpected activity record count: ${Array.isArray(data) ? data.length : 'not an array'}`);
+          const required = ['id', 'title', 'category', 'grades', 'days', 'variants'];
+
+          function validate(data, label) {
+            if (!Array.isArray(data) || data.length === 0) {
+              throw new Error(`${label} must contain a non-empty array`);
+            }
+            const ids = new Set();
+            data.forEach((item, index) => {
+              if (!item || required.some((key) => !(key in item))) {
+                throw new Error(`${label} record ${index + 1} is missing required fields`);
+              }
+              if (typeof item.id !== 'string' || !item.id.trim()) {
+                throw new Error(`${label} record ${index + 1} has an invalid id`);
+              }
+              if (ids.has(item.id)) {
+                throw new Error(`${label} contains duplicate id: ${item.id}`);
+              }
+              ids.add(item.id);
+              if (!Array.isArray(item.grades) || !item.grades.length ||
+                  !item.grades.every((grade) => Number.isInteger(grade) && grade >= 1 && grade <= 6)) {
+                throw new Error(`${label} record ${index + 1} has invalid grades`);
+              }
+              if (!Array.isArray(item.days) || !Array.isArray(item.variants)) {
+                throw new Error(`${label} record ${index + 1} has invalid list fields`);
+              }
+            });
+            return data;
           }
-          fs.writeFileSync('data-plain.js', 'window.__DATA__=' + JSON.stringify(data) + ';\n', 'utf8');
-          console.log(`Generated data-plain.js with ${data.length} activities`);
+
+          const plainSource = fs.readFileSync('data-plain.js', 'utf8');
+          const plainMatch = plainSource.match(/^window\.__DATA__=(.*);\s*$/s);
+          if (!plainMatch) throw new Error('Plain activity data was not found');
+          const plain = validate(JSON.parse(plainMatch[1]), 'data-plain.js');
+
+          const compressedSource = fs.readFileSync('data.js', 'utf8');
+          const compressedMatch = compressedSource.match(/^window\.__DATA_GZIP__='([^']+)';\s*$/s);
+          if (!compressedMatch) throw new Error('Compressed activity data was not found');
+          const compressed = validate(
+            JSON.parse(zlib.gunzipSync(Buffer.from(compressedMatch[1], 'base64')).toString('utf8')),
+            'data.js'
+          );
+
+          if (JSON.stringify(plain) !== JSON.stringify(compressed)) {
+            throw new Error('Plain and compressed activity data do not match');
+          }
+          console.log(`Validated ${plain.length} activities`);
           NODE
 
       - name: Setup Pages
