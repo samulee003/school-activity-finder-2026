@@ -61,4 +61,4 @@ function findConflicts(list){
   return out;
 }
 function favoriteConflictSet(){const fav=[...favorites].map(id=>DATA.find(x=>x.id===id)).filter(Boolean); const set=new Set(); findConflicts(fav).forEach(c=>{set.add(c.a.id); set.add(c.b.id);}); return set;}
-function courseImage(x){const matched=GROUPS.find(g=>g.cats && g.cats.includes(x.category)); return matched ? matched.image : IMAGE_MAP.doc;}
+function courseImage(x){const matched=GROUPS.find(g=>g.cats && g.cats.includes(x.category)); return matched ? matched.image : imageFor('doc');}
