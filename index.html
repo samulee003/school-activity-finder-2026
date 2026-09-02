@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F7F3EC">
+<meta name="description" content="2026 年度小學非正課聯課活動查詢工具，支援搜尋、篩選、收藏比較與時間衝突提醒。">
+<title>2026 小學聯課活動查詢｜功能圖像版</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#results">跳到結果</a>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><img src="data:image/webp;base64,UklGRmIFAABXRUJQVlA4IFYFAAAwMACdASoAAQABPpVIoUulpCOho7GqOLASiWdu4W0Q23xL8K9aQAcZMrjgZpyGmxsg3DMTFs0+vNq83ozErVlPrzavhAP/QH8Ir5RsNwk20EjJEjEvaBgbtx9bM7s128fOsiy78eL9qmc9OC4gKT/2uQKe68YUTqFBdO1oTo3Iau9VPxztSpYaUHj2o3GzPyKRRKDVwYb/5VW2riUCFJGwQ16W3yKX4/QxpRDbj2PXKMRsmlofvgbfd4l8esjBItUMAL9PPC5ej18QaMCdoBM7CavV41GBKZZx6a0pxHeFxPKftECQBu3DJ2ZInX9br/nYhKRKnAPdh7XT0kas3TL9RIyMkn8I6hEWnE2W28ddog89QzAlB89ofqyTM8Z+Iyto7Btng5DmvbbbiGS2euX7qCryOqYKpf8KZWK/8phcLF1EkiYvZVUiHL4fm3jKjEBTqqkldciiYbb7n9bKoVcjjd7H43dR8Zo2bI9vYGiULzC3o10KN3iYvN6MavPBK83fL5Pc2rzd4kwAAP79u5/EYY0IUOeMBHU1c54Uv6cABgyGEq6Yj8z88yPIjp+mnQ8p0tzU9XzTIciWN+wrz6EMBhpTyzPUu5/NGuXLCFwCm69tzQbp7FYqYnqiuFjNr85THcgBAAWVSnHYaDCEZ4g9Rr7EIcgiHUsv4M3pPa222fgu1ImVPJQT8LBOsNOS7uiYRPQvCoaTSfN1UEf9GJ0VVAnGUMM27Z7RjF18IHvpn106cofz0PzwDy2qvT6HxVCoJbImLEsgOGDfulnurslN3iLH0M1NgzBbgXqkzqtnvIwi5xhxThLl5c+fYW7IQi/luoq7dOxPeoZvYacFT7mMpb23Iyf8Zn/Ns2vpy+E5+TJQcRWNTLwZn23nN0vphblvOd3FUKjaWTvltkTY1PNGDgIhk29BNeXOwcliHlnv0wVnz00bInTC0+auixRfZecotFcPbXia7HSxRqFdOfIuIH/W78ZV7OU2nyS9HI1hqgpDk9wR1/rX1CIJWKdl+X8M48OYeiFNpsVcU6AmSkmczgaT8GP8Nokbl6xeEQ56BSltkwfRlXo1A21b89qc4gBWvP60uSEns6VGbFw0HMx2i0jMQdJZRvaUuGd7Nh+5erktO13pwxtsAXyZfiG7cWmKFouOrFXolr+2UQJys+h2PIFls8pDjkYfxnKc7gD7g18waZI8bOVAVuN1jDtithzOgtoISiZITdTqnI83KlirUP5E2p3g5LPcw3eYpfNRQ6HpWTHfck23jvZMKpPQiwvh7U1uTzCHTQ2UM7Zp9HbcG7iVceVDblYj1+3cJfKPburR1I5ViJjws/mbdPFGSnh4U4AVqW+K0ys79WmpiL6WAsrPPleOAJMRvszdnU2lAaQeB2Gk/4mqHa1gFkSXnL44nvChmm1VLAdPFczpsIgMPzE8Ok5DjKREd+k8QLKVwv7xr0Dls4YFLqqe4Yo1uGX1kezvHqmbqJooFxRf+hOz7DnSDCadHaa4pNpmd8EgawPylxLLAxPg1Esrlb0UFLqHc0im6N9wLe/Mnr9cGxQHCMj0QaUe0dUa8cHXLYcx1bdcJU1VPOCg/Fh233gB16KKURkci+8BZYONd9rD2fE3P0xnX0/Dj0GkyB82SkCDVcKk7ZmfEwS3ahPys55j8JGVxlxm6VUENnvumT/8u8uHv6jdzpOdm8IpyBTKjBf55RklrNV+2mWtr8ozOkFAcAcDhxJADd7E+6RNkpJn8/5yF9Lo6kXED5O48hfLxMZFjZGlYs4sOiBzbv0cd+prCbOpXcDipWYAh0UReuSS6CHAAAAAAAAA" alt=""></div>
+      <div class="brand-copy">
+        <h1>2026 小學聯課活動查詢</h1>
+        <p>搜尋、篩選、收藏比較</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="btn-soft" id="resetBtn" type="button">清除篩選</button>
+      <button class="btn-soft" id="printBtn" type="button">列印結果</button>
+    </div>
+  </header>
+
+  <section class="panel summary">
+    <div class="summary-main">
+      <h2>聯課活動查詢與比較</h2>
+      <p>按年級或分類快速縮小範圍。</p>
+    </div>
+    <div class="summary-badges" id="heroStats"></div>
+  </section>
+
+  <section class="command">
+    <div class="command-box">
+      <div class="search-row">
+        <div class="searchbox">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Zm9 2-4.2-4.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <input id="q" type="search" autocomplete="off" placeholder="搜尋活動名稱、老師姓名、AI、桌遊、劍擊⋯⋯">
+          <span class="keyhint">/</span>
+        </div>
+        <div class="command-actions">
+          <button class="btn" id="clearSearchBtn" type="button">清空搜尋</button>
+        </div>
+      </div>
+      <div class="grade-row" id="gradeTabs"></div>
+      <div class="quick-row" id="quickPills">
+        <button class="quick-chip" data-quick="free" type="button">💸 免費</button>
+        <button class="quick-chip" data-quick="sat" type="button">🗓️ 星期六</button>
+        <button class="quick-chip" data-quick="fav" type="button">⭐ 已收藏</button>
+        <button class="quick-chip" data-quick="grade" type="button">🎒 <span id="gradeQuickLabel">我的年級</span></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel cat-panel">
+    <div class="section-head">
+      <div>
+        <h3>分類捷徑</h3>
+        <p>快速篩選</p>
+      </div>
+    </div>
+    <div class="category-grid" id="categoryGrid"></div>
+  </section>
+
+  <details class="panel filters" open>
+    <summary>
+      <h3>更多篩選</h3>
+      <small id="filterCountText">目前未套用其他條件</small>
+    </summary>
+    <div class="filter-grid">
+      <div class="field"><label for="daySel">星期</label><select id="daySel"><option value="all">全部星期</option><option value="一">星期一</option><option value="二">星期二</option><option value="三">星期三</option><option value="四">星期四</option><option value="五">星期五</option><option value="六">星期六</option><option value="日">星期日</option></select></div>
+      <div class="field"><label for="catSel">類別</label><select id="catSel"><option value="all">全部類別</option></select></div>
+      <div class="field"><label for="feeSel">費用</label><select id="feeSel"><option value="all">全部</option><option value="free">免費</option><option value="paid">收費</option></select></div>
+      <div class="field"><label for="sourceSel">來源</label><select id="sourceSel"><option value="all">全部原表</option><option value="小一二">小一二原表</option><option value="小三四">小三四原表</option></select></div>
+      <label class="checkline"><input id="favOnly" type="checkbox"><span>只看已收藏</span></label>
+    </div>
+  </details>
+
+  <section class="panel results-head" id="results">
+    <div class="results-top">
+      <div>
+        <h2 class="results-title"><span id="resultContext">全部</span><span style="color:var(--line-2);font-weight:400">｜</span><strong id="resultCount">0</strong> 個活動</h2>
+        <p class="results-sub" id="resultSubtitle">顯示所有活動</p>
+      </div>
+      <div class="tools">
+        <label>排序
+          <select id="sortSel"><option value="source">原順序</option><option value="title">名稱</option><option value="free">免費優先</option></select>
+        </label>
+      </div>
+    </div>
+    <div class="active-filters" id="activeFilters"></div>
+  </section>
+
+  <section class="panel compare" id="favoritesPanel"></section>
+
+  <section class="panel table-wrap" id="desktopResults">
+    <table class="table" aria-label="聯課活動結果清單">
+      <thead>
+        <tr>
+          <th class="col-title">活動</th>
+          <th class="col-grade">年級</th>
+          <th class="col-day">星期</th>
+          <th class="col-time">時間</th>
+          <th class="col-place">地點</th>
+          <th class="col-fee">費用</th>
+          <th class="col-action">動作</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </section>
+
+  <section class="mobile-list" id="mobileList"></section>
+
+  <footer class="foot">
+    <span>2026 年度小學非正課聯課活動查詢工具</span>
+    <span>收藏資料只儲存在此瀏覽器</span>
+  </footer>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<dialog id="detailDialog" aria-labelledby="dialogTitle">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div>
+        <div class="sheet-over" id="dialogCategory"></div>
+        <h2 class="sheet-title" id="dialogTitle"></h2>
+      </div>
+      <button class="btn" id="closeDialog" type="button">關閉</button>
+    </div>
+    <div class="sheet-body" id="dialogBody"></div>
+  </div>
+</dialog>
+
+<script src="images.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
