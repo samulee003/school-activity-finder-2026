@@ -24,6 +24,16 @@
     <div class="summary-badges" id="heroStats"></div>
   </section>
 
+  <section class="panel results-head" id="results">
+    <div class="results-top"><div><h2 class="results-title"><span id="resultContext">全部</span><span style="color:var(--line-2);font-weight:400">｜</span><strong id="resultCount">0</strong> 個活動</h2><p class="results-sub" id="resultSubtitle">顯示所有活動</p></div><div class="tools"><label>排序 <select id="sortSel"><option value="source">原順序</option><option value="title">名稱</option><option value="free">免費優先</option></select></label></div></div>
+    <div class="active-filters" id="activeFilters"></div>
+  </section>
+
+  <section class="panel compare" id="favoritesPanel"></section>
+
+  <section class="panel table-wrap" id="desktopResults"><table class="table" aria-label="聯課活動結果清單"><thead><tr><th class="col-title">活動</th><th class="col-grade">年級</th><th class="col-day">星期</th><th class="col-time">時間</th><th class="col-place">地點</th><th class="col-fee">費用</th><th class="col-action">動作</th></tr></thead><tbody id="tbody"></tbody></table></section>
+  <section class="mobile-list" id="mobileList"></section>
+
   <section class="command">
     <div class="command-box">
       <div class="search-row">
@@ -48,15 +58,6 @@
     </div>
   </details>
 
-  <section class="panel results-head" id="results">
-    <div class="results-top"><div><h2 class="results-title"><span id="resultContext">全部</span><span style="color:var(--line-2);font-weight:400">｜</span><strong id="resultCount">0</strong> 個活動</h2><p class="results-sub" id="resultSubtitle">顯示所有活動</p></div><div class="tools"><label>排序 <select id="sortSel"><option value="source">原順序</option><option value="title">名稱</option><option value="free">免費優先</option></select></label></div></div>
-    <div class="active-filters" id="activeFilters"></div>
-  </section>
-
-  <section class="panel compare" id="favoritesPanel"></section>
-
-  <section class="panel table-wrap" id="desktopResults"><table class="table" aria-label="聯課活動結果清單"><thead><tr><th class="col-title">活動</th><th class="col-grade">年級</th><th class="col-day">星期</th><th class="col-time">時間</th><th class="col-place">地點</th><th class="col-fee">費用</th><th class="col-action">動作</th></tr></thead><tbody id="tbody"></tbody></table></section>
-  <section class="mobile-list" id="mobileList"></section>
   <footer class="foot"><span>2026 年度小學非正課聯課活動查詢工具</span><span>收藏資料只儲存在此瀏覽器</span></footer>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
