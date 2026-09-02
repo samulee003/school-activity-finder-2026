@@ -23,12 +23,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Build browser-compatible activity data
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const zlib = require('zlib');
+          const source = fs.readFileSync('data.js', 'utf8');
+          const match = source.match(/window\.__DATA_GZIP__='([^']+)'/);
+          if (!match) throw new Error('Compressed activity data was not found');
+          const json = zlib.gunzipSync(Buffer.from(match[1], 'base64')).toString('utf8');
+          const data = JSON.parse(json);
+          if (!Array.isArray(data) || data.length !== 104) {
+            throw new Error(`Unexpected activity record count: ${Array.isArray(data) ? data.length : 'not an array'}`);
+          }
+          fs.writeFileSync('data-plain.js', 'window.__DATA__=' + JSON.stringify(data) + ';\n', 'utf8');
+          console.log(`Generated data-plain.js with ${data.length} activities`);
+          NODE
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
           path: .
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
