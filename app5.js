@@ -25,9 +25,8 @@ el.mobileList.addEventListener('click',e=>{const reset=e.target.closest('[data-e
 el.favoritesPanel.addEventListener('click',e=>{const fav=e.target.closest('[data-fav]'); if(fav){const id=fav.getAttribute('data-fav'); const adding=!favorites.has(id); adding?favorites.add(id):favorites.delete(id); saveFav(); render(); showToast(adding?'已加入收藏比較':'已取消收藏'); return;} const detail=e.target.closest('[data-detail]'); if(detail) openDetail(detail.getAttribute('data-detail'));});
 document.getElementById('closeDialog').addEventListener('click',closeDetail);
 el.dialog.addEventListener('click',e=>{if(e.target===el.dialog) closeDetail();});
-function syncStickyTop(){const cmd=document.querySelector('.command'); if(!cmd) return; document.documentElement.style.setProperty('--cmd-h', cmd.getBoundingClientRect().height+'px');}
 function isMobile(){return window.matchMedia('(max-width:820px)').matches;}
-function mobileScrollToResults(){ if(!isMobile()) return; const res=document.getElementById('results'); const cmd=document.querySelector('.command'); if(!res||!cmd) return; const top=res.getBoundingClientRect().top + window.scrollY - cmd.getBoundingClientRect().height - 8; if(Math.abs(window.scrollY - top) > 60) programmaticScrollTo(top); }
+function mobileScrollToResults(){ if(!isMobile()) return; const res=document.getElementById('results'); const cmd=document.querySelector('.command'); if(!res||!cmd) return; const top=res.getBoundingClientRect().top + window.scrollY - cmd.getBoundingClientRect().height - 8; if(Math.abs(window.scrollY - top) <= 60) return; programmaticScrollTo(top); const myTarget=top; setTimeout(()=>{ if(!scrollAnim && isMobile() && Math.abs(window.scrollY - myTarget) > 60) mobileScrollToResults(); },1300); }
 if(isMobile()){const f=document.querySelector('details.filters'); if(f) f.removeAttribute('open');}
 const elCmd=document.querySelector('.command');
 const collapseBar=document.getElementById('collapseBar');
@@ -61,7 +60,6 @@ function applyCollapsed(collapse){
   requestAnimationFrame(()=>elCmd.classList.remove('no-anim'));
   collapseFrozenUntil=performance.now()+400;
   lastScrollY=window.scrollY;
-  syncStickyTop();
 }
 function programmaticScrollTo(top){
   const from=window.scrollY;
@@ -78,7 +76,7 @@ function onScrollCollapse(){
       scrollAnim=null; // user took over
     }
   }
-  if(performance.now()<collapseFrozenUntil){lastScrollY=y;syncStickyTop();return;}
+  if(performance.now()<collapseFrozenUntil){lastScrollY=y;return;}
   if(isMobile()&&elCmd){
     const dy=y-lastScrollY;
     const dialogOpen=el.dialog.open||el.dialog.hasAttribute('open');
@@ -87,7 +85,6 @@ function onScrollCollapse(){
     updateCollapseSummary();
   }
   lastScrollY=window.scrollY;
-  syncStickyTop();
 }
 window.addEventListener('scroll',onScrollCollapse,{passive:true});
 function expandCommand(){applyCollapsed(false);}
@@ -106,11 +103,10 @@ function expandCommandInstant(){
   requestAnimationFrame(()=>elCmd.classList.remove('no-anim'));
   collapseFrozenUntil=performance.now()+400;
   lastScrollY=window.scrollY;
-  syncStickyTop();
   return true;
 }
 const _origMobileScroll=mobileScrollToResults;
 mobileScrollToResults=function(){expandCommandInstant(); _origMobileScroll();};
-window.addEventListener('resize',()=>{if(elCmd&&!isMobile()) elCmd.classList.remove('collapsed'); syncStickyTop();});
+window.addEventListener('resize',()=>{if(elCmd&&!isMobile()) elCmd.classList.remove('collapsed'); lastScrollY=window.scrollY;});
 onScrollCollapse();
 document.addEventListener('keydown',e=>{if(e.key==='Escape' && (el.dialog.open||el.dialog.hasAttribute('open'))){closeDetail(); return;} if(e.key==='/' && !e.metaKey && !e.ctrlKey && !e.altKey && !(el.dialog.open||el.dialog.hasAttribute('open'))){const tag=(e.target&&e.target.tagName)||''; if(!['INPUT','TEXTAREA','SELECT'].includes(tag)){e.preventDefault(); el.q.focus();}}});
