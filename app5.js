@@ -3,17 +3,17 @@ function closeDetail(){if(typeof el.dialog.close==='function') el.dialog.close()
 function openDetail(id){const x=DATA.find(item=>item.id===id); if(!x) return; el.dialogTitle.textContent=dash(x.title); el.dialogCategory.textContent=dash(x.category); el.dialogBody.innerHTML=(x.variants||[]).map(v=>'<section class="variant"><div class="variant-head"><div class="variant-title">'+esc(v.source_group)+' 原表 · 項目 #'+esc(v.source_no)+'</div><div class="variant-page">PDF 第 '+esc(v.source_page)+' 頁</div></div><dl class="dl">'+row('參與年級',v.grades_text)+row('上課日期',v.dates)+row('活動時間',v.time)+row('活動地點',v.location)+row('費用',v.fee)+row('備註',v.notes)+row('老師 / 查詢',v.contact)+'</dl>'+(v.description?'<div class="desc">'+esc(v.description)+'</div>':'')+'</section>').join(''); if(typeof el.dialog.showModal==='function') el.dialog.showModal(); else el.dialog.setAttribute('open','');}
 function syncControls(){el.q.value=state.query; el.day.value=state.day; el.cat.value=state.category; el.fee.value=state.fee; el.source.value=state.source; el.sort.value=state.sort; el.favOnly.checked=state.favOnly; renderSummary(); renderCategoryCards();}
 function clearOne(key){const d={query:'',grade:'all',group:'all',day:'all',category:'all',fee:'all',source:'all',favOnly:false}; if(key in d){state[key]=d[key]; syncControls(); render();}}
-function clearAll(){Object.assign(state,{grade:'all',group:'all',query:'',day:'all',category:'all',fee:'all',source:'all',sort:'source',favOnly:false}); syncControls(); render();}
+function clearAll(){Object.assign(state,{grade:'all',group:'all',query:'',day:'all',category:'all',fee:'all',source:'all',sort:'source',favOnly:false}); syncControls(); render(); mobileScrollToResults();}
 function render(){renderCompare(); renderResults(); syncControls();}
 (async function init(){DATA=await loadData();const valid=new Set(DATA.map(x=>x.id)); let pruned=false; favorites.forEach(id=>{if(!valid.has(id)){favorites.delete(id); pruned=true;}}); if(pruned) saveFav(); const cats=[...new Set(DATA.map(x=>x.category))].sort((a,b)=>a.localeCompare(b,'zh-Hant')); cats.forEach(c=>{const o=document.createElement('option'); o.value=c; o.textContent=c; el.cat.appendChild(o);}); render();})().catch(err=>{console.error(err);document.body.insertAdjacentHTML('beforeend','<div style="position:fixed;left:12px;right:12px;bottom:12px;padding:12px;background:#fff3f0;border:1px solid #e8b8aa;border-radius:12px;z-index:9999;font-family:sans-serif">資料載入失敗，請重新整理頁面。</div>');});
-el.gradeTabs.addEventListener('click',e=>{const b=e.target.closest('[data-grade]'); if(!b) return; state.grade=b.getAttribute('data-grade'); syncControls(); render();});
-el.categoryGrid.addEventListener('click',e=>{const b=e.target.closest('[data-group]'); if(!b) return; const next=b.getAttribute('data-group'); state.group=state.group===next&&next!=='all'?'all':next; state.category='all'; syncControls(); render();});
-document.getElementById('quickPills').addEventListener('click',e=>{const b=e.target.closest('[data-quick]'); if(!b) return; const k=b.getAttribute('data-quick'); if(k==='free') state.fee=state.fee==='free'?'all':'free'; if(k==='sat') state.day=state.day==='六'?'all':'六'; if(k==='fav') state.favOnly=!state.favOnly; if(k==='grade') state.grade=state.grade==='all'?'1':'all'; syncControls(); render();});
+el.gradeTabs.addEventListener('click',e=>{const b=e.target.closest('[data-grade]'); if(!b) return; state.grade=b.getAttribute('data-grade'); syncControls(); render(); mobileScrollToResults();});
+el.categoryGrid.addEventListener('click',e=>{const b=e.target.closest('[data-group]'); if(!b) return; const next=b.getAttribute('data-group'); state.group=state.group===next&&next!=='all'?'all':next; state.category='all'; syncControls(); render(); mobileScrollToResults();});
+document.getElementById('quickPills').addEventListener('click',e=>{const b=e.target.closest('[data-quick]'); if(!b) return; const k=b.getAttribute('data-quick'); if(k==='free') state.fee=state.fee==='free'?'all':'free'; if(k==='sat') state.day=state.day==='六'?'all':'六'; if(k==='fav') state.favOnly=!state.favOnly; if(k==='grade') state.grade=state.grade==='all'?'1':'all'; syncControls(); render(); mobileScrollToResults();});
 el.q.addEventListener('input',e=>{state.query=e.target.value; render();});
-el.day.addEventListener('change',e=>{state.day=e.target.value; render();});
-el.cat.addEventListener('change',e=>{state.category=e.target.value; if(state.category!=='all') state.group='all'; render();});
-el.fee.addEventListener('change',e=>{state.fee=e.target.value; render();});
-el.source.addEventListener('change',e=>{state.source=e.target.value; render();});
+el.day.addEventListener('change',e=>{state.day=e.target.value; render(); mobileScrollToResults();});
+el.cat.addEventListener('change',e=>{state.category=e.target.value; if(state.category!=='all') state.group='all'; render(); mobileScrollToResults();});
+el.fee.addEventListener('change',e=>{state.fee=e.target.value; render(); mobileScrollToResults();});
+el.source.addEventListener('change',e=>{state.source=e.target.value; render(); mobileScrollToResults();});
 el.sort.addEventListener('change',e=>{state.sort=e.target.value; render();});
 el.favOnly.addEventListener('change',e=>{state.favOnly=e.target.checked; render();});
 document.getElementById('resetBtn').addEventListener('click',clearAll);
@@ -29,4 +29,7 @@ function syncStickyTop(){const cmd=document.querySelector('.command'); if(!cmd) 
 window.addEventListener('resize',syncStickyTop);
 window.addEventListener('load',syncStickyTop);
 syncStickyTop();
+function isMobile(){return window.matchMedia('(max-width:820px)').matches;}
+function mobileScrollToResults(){ if(!isMobile()) return; const res=document.getElementById('results'); const cmd=document.querySelector('.command'); if(!res||!cmd) return; const top=res.getBoundingClientRect().top + window.scrollY - cmd.getBoundingClientRect().height - 8; if(Math.abs(window.scrollY - top) > 60) window.scrollTo({top, behavior:'smooth'}); }
+if(isMobile()){const f=document.querySelector('details.filters'); if(f) f.removeAttribute('open');}
 document.addEventListener('keydown',e=>{if(e.key==='Escape' && (el.dialog.open||el.dialog.hasAttribute('open'))){closeDetail(); return;} if(e.key==='/' && !e.metaKey && !e.ctrlKey && !e.altKey && !(el.dialog.open||el.dialog.hasAttribute('open'))){const tag=(e.target&&e.target.tagName)||''; if(!['INPUT','TEXTAREA','SELECT'].includes(tag)){e.preventDefault(); el.q.focus();}}});
