@@ -25,4 +25,8 @@ el.mobileList.addEventListener('click',e=>{const reset=e.target.closest('[data-e
 el.favoritesPanel.addEventListener('click',e=>{const fav=e.target.closest('[data-fav]'); if(fav){const id=fav.getAttribute('data-fav'); const adding=!favorites.has(id); adding?favorites.add(id):favorites.delete(id); saveFav(); render(); showToast(adding?'已加入收藏比較':'已取消收藏'); return;} const detail=e.target.closest('[data-detail]'); if(detail) openDetail(detail.getAttribute('data-detail'));});
 document.getElementById('closeDialog').addEventListener('click',closeDetail);
 el.dialog.addEventListener('click',e=>{if(e.target===el.dialog) closeDetail();});
+function syncStickyTop(){const cmd=document.querySelector('.command'); if(!cmd) return; document.documentElement.style.setProperty('--cmd-h', cmd.getBoundingClientRect().height+'px');}
+window.addEventListener('resize',syncStickyTop);
+window.addEventListener('load',syncStickyTop);
+syncStickyTop();
 document.addEventListener('keydown',e=>{if(e.key==='Escape' && (el.dialog.open||el.dialog.hasAttribute('open'))){closeDetail(); return;} if(e.key==='/' && !e.metaKey && !e.ctrlKey && !e.altKey && !(el.dialog.open||el.dialog.hasAttribute('open'))){const tag=(e.target&&e.target.tagName)||''; if(!['INPUT','TEXTAREA','SELECT'].includes(tag)){e.preventDefault(); el.q.focus();}}});
