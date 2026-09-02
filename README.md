@@ -12,5 +12,5 @@ load the plain asset. The Pages workflow validates that both files contain the
 same records before deployment.
 
 The data is normalized by activity: one activity can contain multiple `variants`
-when it appears in more than one source table. The current dataset contains 80
-activities and 104 source variants.
+when it appears in more than one source table. The current dataset contains 104
+activities and 128 source variants.
