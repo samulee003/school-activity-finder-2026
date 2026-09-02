@@ -56,9 +56,10 @@ function groupCount(groupId){const g=GROUP_MAP[groupId]; if(!g||!g.cats) return 
 function activeFilterCount(){return [state.grade!=='all',state.group!=='all',state.day!=='all',state.category!=='all',state.fee!=='all',state.source!=='all',state.favOnly,!!state.query].filter(Boolean).length;}
 function filtered(){
   const q=state.query.trim();
+  const nq=norm(q);
   const group=GROUP_MAP[state.group];
   const arr=DATA.filter(x=>{
-    if(q && !norm(x.search).includes(norm(q))) return false;
+    if(q && !(norm(x.search).includes(nq)||norm(x.category).includes(nq))) return false;
     if(state.grade!=='all' && !x.grades.includes(Number(state.grade))) return false;
     if(group && group.cats && !group.cats.includes(x.category)) return false;
     if(state.category!=='all' && x.category!==state.category) return false;
