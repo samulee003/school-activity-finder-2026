@@ -81,7 +81,7 @@ function filtered(){
 function heroBadge(label,value){return '<span class="summary-badge"><strong>'+esc(value)+'</strong>'+esc(label)+'</span>';}
 function renderSummary(){
   el.heroStats.innerHTML=heroBadge('個活動', DATA.length)+heroBadge('個收藏', favorites.size)+heroBadge('個免費', freeCount('all'))+heroBadge('個星期六活動', satCount('all'));
-  const grades=['all',1,2,3,4].filter(g=>g==='all'||gradeCount(String(g))>0);
+  const grades=['all',1,2,3,4,5,6].filter(g=>g==='all'||gradeCount(String(g))>0);
   el.gradeTabs.innerHTML=grades.map(g=>{const label=g==='all'?'全部':gradeNames[g]; const count=g==='all'?DATA.length:gradeCount(String(g)); return '<button class="grade-chip '+(String(g)===state.grade?'active':'')+'" type="button" data-grade="'+g+'"><strong>'+label+'</strong><span>'+count+' 個活動</span></button>';}).join('');
   el.gradeQuickLabel.textContent=state.grade==='all'?'我的年級':gradeNames[Number(state.grade)];
   const n=activeFilterCount(); el.filterCountText.textContent=n?('目前已套用 '+n+' 個條件'):'目前未套用其他條件';
