@@ -56,25 +56,28 @@ const iso = (d) => d.toISOString().slice(0, 10);
 async function fetchStats(code, token, days) {
   let all = [];
   for (const { start, end } of buildRanges(days)) {
-    const url = `${BASE(code)}/stats/visits?start=${start}&end=${end}`;
+    const url = `${BASE(code)}/stats/total?start=${start}&end=${end}`;
     const res = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
         'X-Requested-With': 'XMLHttpRequest',
+        Accept: 'application/json',
       },
     });
-    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText} for ${start}..${end} — ${await res.text()}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText} for ${start}..${end} — ${(await res.text()).slice(0, 200)}`);
     const body = await res.json();
-    all = all.concat(body.stats || []);
-    await new Promise((r) => setTimeout(r, 600)); // 溫柔一點，API 限速約 2 req/s
+    if (!Array.isArray(body.stats)) throw new Error(`unexpected response for ${start}..${end}: ${JSON.stringify(body).slice(0, 200)}`);
+    all = all.concat(body.stats);
+    await new Promise((r) => setTimeout(r, 600)); // API 限速約 4 req/s，保守一點
   }
   return all;
 }
 
 function summarize(stats) {
-  const series = stats.map((s) => ({ date: s.day, visits: s.visits, views: s.views }));
-  series.sort((a, b) => (a.date < b.date ? -1 : 1));
-  const totals = series.reduce((acc, s) => ({ visits: acc.visits + s.visits, views: acc.views + s.views }), { visits: 0, views: 0 });
+  const series = stats
+    .map((s) => ({ date: s.day, visits: Number(s.daily) || 0 }))
+    .sort((a, b) => (a.date < b.date ? -1 : 1));
+  const totals = { visits: series.reduce((a, s) => a + s.visits, 0) };
   return { series, totals };
 }
 
@@ -94,15 +97,15 @@ function detectAnomalies(series, lookback = 7) {
 }
 
 function selftest() {
-  const mk = (arr) => arr.map((v, i) => ({ day: `2026-01-${String(i + 1).padStart(2, '0')}`, visits: v, views: v * 2 }));
+  const mk = (arr) => arr.map((v, i) => ({ day: `2026-01-${String(i + 1).padStart(2, '0')}`, daily: v, hourly: [] }));
   const assert = (cond, msg) => { if (!cond) { console.error('SELFTEST FAIL:', msg); process.exit(1); } console.log('ok —', msg); };
   const s1 = summarize(mk([1, 2, 3]));
   assert(s1.totals.visits === 6 && s1.series[0].date === '2026-01-01', 'summarize totals + ordering');
   assert(buildRanges(75).length === 3, '75 days chunks into 3 ranges');
   assert(buildRanges(1).length === 1 && buildRanges(1)[0].start === buildRanges(1)[0].end, 'single day range');
-  const spike = detectAnomalies(mk([5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 40]));
+  const spike = detectAnomalies(summarize(mk([5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 40])).series);
   assert(spike.length === 1 && spike[0].type === 'spike' && spike[0].today === 40, 'spike detected');
-  const drop = detectAnomalies(mk([10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1]));
+  const drop = detectAnomalies(summarize(mk([10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1])).series);
   assert(drop.length === 1 && drop[0].type === 'drop', 'drop detected');
   const quiet = detectAnomalies(mk([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2]));
   assert(quiet.length === 0, 'small numbers do not alert');
@@ -127,9 +130,9 @@ async function main() {
     console.log(JSON.stringify({ code, days: args.days, totals, series, alerts, fetchedAt: new Date().toISOString() }, null, 2));
   } else {
     console.log(`\n${code}.goatcounter.com — 最近 ${series.length} 天`);
-    console.log('日期        訪客  瀏覽');
-    for (const s of series) console.log(`${s.date}  ${String(s.visits).padStart(4)}  ${String(s.views).padStart(5)}`);
-    console.log(`合計        ${String(totals.visits).padStart(4)}  ${String(totals.views).padStart(5)}`);
+    console.log('日期        訪客');
+    for (const s of series) console.log(`${s.date}  ${String(s.visits).padStart(4)}`);
+    console.log(`合計        ${String(totals.visits).padStart(4)}`);
     if (alerts.length) {
       console.log('\n⚠️ 異動提醒：');
       alerts.forEach((a) => console.log(`  [${a.type}] ${a.date}: ${a.message}`));
