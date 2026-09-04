@@ -14,3 +14,24 @@ same records before deployment.
 The data is normalized by activity: one activity can contain multiple `variants`
 when it appears in more than one source table. The current dataset contains 112
 activities and 134 source variants.
+
+## Visitor analytics (GoatCounter)
+
+The page loads GoatCounter only when `window.GOATCOUNTER_CODE` is set in
+`index.html` (cookieless, free for non-commercial use). To enable:
+
+1. Register at https://www.goatcounter.com (choose the non-commercial free plan).
+2. Set your subdomain code in `index.html`: `window.GOATCOUNTER_CODE = 'your-code';`
+3. In GoatCounter → Settings → API, create a token.
+
+Pull daily visitor counts (plus trend data and anomaly alerts):
+
+```
+node analytics/fetch-visitors.js your-code <token> --days 30          # table + alerts
+node analytics/fetch-visitors.js your-code <token> --days 30 --json   # machine-readable
+GOATCOUNTER_TOKEN=<token> node analytics/fetch-visitors.js your-code - --days 14 --json > visitors.json
+```
+
+`--alert` exits with code 1 when the latest day deviates sharply from the
+7-day baseline (spike > 2.5x, drop < 0.5x with baseline ≥ 5) — suitable for a
+scheduled job. `--selftest` runs the built-in checks without network access.

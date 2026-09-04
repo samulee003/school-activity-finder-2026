@@ -67,6 +67,18 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <dialog id="detailDialog" aria-labelledby="dialogTitle"><div class="sheet"><div class="sheet-head"><div><div class="sheet-over" id="dialogCategory"></div><h2 class="sheet-title" id="dialogTitle"></h2></div><button class="btn" id="closeDialog" type="button">關閉</button></div><div class="sheet-body" id="dialogBody"></div></div></dialog>
 <script src="images.js"></script>
+<script>
+// 訪客統計（GoatCounter，無 cookie、非商業免費）：填入子網域代碼即啟用。
+// 註冊：https://www.goatcounter.com ；之後用 analytics/fetch-visitors.js 拉每日數據。
+window.GOATCOUNTER_CODE = ''; // 例：'puiching-eca'
+if (window.GOATCOUNTER_CODE) {
+  const gc = document.createElement('script');
+  gc.async = true;
+  gc.dataset.goatcounter = 'https://' + window.GOATCOUNTER_CODE + '.goatcounter.com/count';
+  gc.src = 'https://gc.zgo.at/count.js';
+  document.head.appendChild(gc);
+}
+</script>
 <script src="data.js"></script>
 <script src="data-plain.js"></script>
 <script src="app1.js"></script>
